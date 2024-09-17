@@ -7,9 +7,11 @@ from abc import ABC, abstractmethod
 from src.dao.auteurs_dao import AuteursDAO
 from src.dao.editeurs_dao import EditeursDAO
 from src.dao.livres_dao import LivresDAO
+from src.dao.membre_jury_dao import MembresJuryDAO
 from src.models.auteur import Auteur
 from src.models.editeur import Editeur
 from src.models.livre import Livre
+from src.models.membre_jury import MembreJury
 
 """
 Ce fichier contient la classe Creator qui s'occupe de la creation d'objets.
@@ -81,6 +83,37 @@ class EditeursCreator(Creator):
         editeur.id = information_source["id_editeur"]
 
         return editeur
+
+
+class MembreJuryCreator(Creator):
+
+    def factory_method(self, information_source: dict) -> MembreJury:
+        """
+        Methode qui retourne un nouvel objet MembreJury.
+        :param information_source:
+        """
+        membre_jury: MembreJury = MembreJury(
+            information_source["nom"],
+            information_source["role"],
+        )
+
+        membre_jury.id = information_source["id_membre"]
+
+        return membre_jury
+
+
+class MembreJuryDAO:
+    pass
+
+
+def create_all_membre_jury_from_database() -> list[MembreJury]:
+    """
+    Creer tous les membres du jury de la base de données.
+    :return: list[MembreJury]
+    """
+    membre_jury = MembresJuryDAO()
+    results: list[dict] = membre_jury.get_all()
+    return list(map(MembreJuryCreator().factory_method, results))
 
 
 def create_all_editeurs_from_database() -> list[Editeur]:
