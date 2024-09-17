@@ -8,10 +8,12 @@ from src.dao.auteurs_dao import AuteursDAO
 from src.dao.editeurs_dao import EditeursDAO
 from src.dao.livres_dao import LivresDAO
 from src.dao.membre_jury_dao import MembresJuryDAO
+from src.dao.personnages_dao import PersonnagesDAO
 from src.models.auteur import Auteur
 from src.models.editeur import Editeur
 from src.models.livre import Livre
 from src.models.membre_jury import MembreJury
+from src.models.personnage import Personnage
 
 """
 Ce fichier contient la classe Creator qui s'occupe de la creation d'objets.
@@ -102,14 +104,35 @@ class MembreJuryCreator(Creator):
         return membre_jury
 
 
-class MembreJuryDAO:
-    pass
+class PersonnagesCreator(Creator):
+
+    def factory_method(self, information_source: dict) -> Personnage:
+        """
+        Methode qui retourne un nouvel objet Personnages.
+        :param information_source:
+        """
+        personnages: Personnage = Personnage(
+            information_source["nom"],
+            information_source["role"],
+        )
+
+        personnages.id = information_source["id_personnage"]
+
+        return personnages
+
+
+def create_all_personnages_from_database() -> list[Personnage]:
+    """
+    Creer tous les personnages de la base de données.
+    """
+    personnages = PersonnagesDAO()
+    results: list[dict] = personnages.get_all()
+    return list(map(PersonnagesCreator().factory_method, results))
 
 
 def create_all_membre_jury_from_database() -> list[MembreJury]:
     """
     Creer tous les membres du jury de la base de données.
-    :return: list[MembreJury]
     """
     membre_jury = MembresJuryDAO()
     results: list[dict] = membre_jury.get_all()
@@ -119,7 +142,6 @@ def create_all_membre_jury_from_database() -> list[MembreJury]:
 def create_all_editeurs_from_database() -> list[Editeur]:
     """
     Creer tous les editeurs de la base de données.
-    :return: list[Editeurs]
     """
     editeurs = EditeursDAO()
     results: list[dict] = editeurs.get_all()
@@ -129,7 +151,6 @@ def create_all_editeurs_from_database() -> list[Editeur]:
 def create_all_livres_from_database() -> list[Livre]:
     """
     Creer tous les livres de la base de données.
-    :return: list[Livres]
     """
     livres = LivresDAO()
     results: list[dict] = livres.get_all()
@@ -139,7 +160,6 @@ def create_all_livres_from_database() -> list[Livre]:
 def create_all_auteurs_from_database() -> list[Auteur]:
     """
     Creer tous les auteurs de la base de données.
-    :return: list[Auteurs]
     """
     auteurs = AuteursDAO()
     results: list[dict] = auteurs.get_all()
