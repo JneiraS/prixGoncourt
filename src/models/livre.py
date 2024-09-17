@@ -1,7 +1,9 @@
 from datetime import date
 
 
-class Livres:
+class Livre:
+
+    book_list: list = []
 
     def __init__(
         self,
@@ -20,3 +22,5 @@ class Livres:
         self.number_of_pages = number_of_pages
         self.isbn = isbn
         self.price = price
+
+        Livre.book_list.append(self)
