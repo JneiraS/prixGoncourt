@@ -5,8 +5,10 @@
 from abc import ABC, abstractmethod
 
 from src.dao.auteurs_dao import AuteursDAO
+from src.dao.editeurs_dao import EditeursDAO
 from src.dao.livres_dao import LivresDAO
 from src.models.auteur import Auteur
+from src.models.editeur import Editeur
 from src.models.livre import Livre
 
 """
@@ -63,6 +65,32 @@ class AuteursCreator(Creator):
         auteur.id = information_source["id_auteur"]
 
         return auteur
+
+
+class EditeursCreator(Creator):
+
+    def factory_method(self, information_source: dict) -> Editeur:
+        """
+        Methode qui retourne un nouvel objet Editeur.
+        :param information_source:
+        """
+        editeur: Editeur = Editeur(
+            information_source["nom"],
+        )
+
+        editeur.id = information_source["id_editeur"]
+
+        return editeur
+
+
+def create_all_editeurs_from_database() -> list[Editeur]:
+    """
+    Creer tous les editeurs de la base de données.
+    :return: list[Editeurs]
+    """
+    editeurs = EditeursDAO()
+    results: list[dict] = editeurs.get_all()
+    return list(map(EditeursCreator().factory_method, results))
 
 
 def create_all_livres_from_database() -> list[Livre]:
