@@ -4,8 +4,10 @@
 
 from abc import ABC, abstractmethod
 
+from src.dao.auteurs_dao import AuteursDAO
 from src.dao.livres_dao import LivresDAO
-from src.models.livres import Livres
+from src.models.auteur import Auteur
+from src.models.livre import Livre
 
 """
 Ce fichier contient la classe Creator qui s'occupe de la creation d'objets.
@@ -27,13 +29,12 @@ class Creator(ABC):
 
 class LivresCreator(Creator):
 
-    def factory_method(self, information_source: dict) -> Livres:
+    def factory_method(self, information_source: dict) -> Livre:
         """
         Methode qui retourne un nouvel objet Person.
         :param information_source:
-        :return:
         """
-        person: Livres = Livres(
+        livre: Livre = Livre(
             information_source["titre"],
             information_source["resume"],
             information_source["date_parution"],
@@ -42,12 +43,29 @@ class LivresCreator(Creator):
             information_source["prix"],
         )
 
-        person.id = information_source["id_livre"]
+        livre.id = information_source["id_livre"]
 
-        return person
+        return livre
 
 
-def create_all_livres_from_database() -> list[Livres]:
+class AuteursCreator(Creator):
+
+    def factory_method(self, information_source: dict) -> Auteur:
+        """
+        Methode qui retourne un nouvel objet Auteur.
+        :param information_source:
+        """
+        auteur: Auteur = Auteur(
+            information_source["nom"],
+            information_source["biographie"],
+        )
+
+        auteur.id = information_source["id_auteur"]
+
+        return auteur
+
+
+def create_all_livres_from_database() -> list[Livre]:
     """
     Creer tous les livres de la base de données.
     :return: list[Livres]
@@ -55,3 +73,13 @@ def create_all_livres_from_database() -> list[Livres]:
     livres = LivresDAO()
     results: list[dict] = livres.get_all()
     return list(map(LivresCreator().factory_method, results))
+
+
+def create_all_auteurs_from_database() -> list[Auteur]:
+    """
+    Creer tous les auteurs de la base de données.
+    :return: list[Auteurs]
+    """
+    auteurs = AuteursDAO()
+    results: list[dict] = auteurs.get_all()
+    return list(map(AuteursCreator().factory_method, results))
