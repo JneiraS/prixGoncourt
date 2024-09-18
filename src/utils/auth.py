@@ -1,5 +1,7 @@
 import hashlib
 
+from rich.prompt import Prompt
+
 from src.dao.membre_jury_dao import MembresJuryDAO
 
 
@@ -13,7 +15,7 @@ class Authentication:
         """
         return hashlib.sha256(self.password.encode()).hexdigest()
 
-    def check_password(self) -> bool:
+    def check_password(self) -> dict:
         """
         Vérifie si le mot de passe enregistré correspond celui donné.
         :return: True si le mot de passe est correct, False sinon.
@@ -23,8 +25,7 @@ class Authentication:
 
         for password in membre_jury_passwords:
             if password["mot_de_passe"] == self.hash_password():
-                return True
-        return False
+                return password
 
     def delete_auth(self):
         """
@@ -33,16 +34,14 @@ class Authentication:
         del self
 
 
-def authenticate() -> bool:
+def authenticate() -> dict:
     """
     Authentifie un membre du jury.
     """
 
-    password: str = input("Veuillez entrer votre mot de passe: ")
+    password: str = Prompt.ask("Veuillez entrer votre mot de passe: ")
     auth = Authentication(password)
-
-    if auth.check_password():
+    response = auth.check_password()
+    if response:
         del auth
-        return True
-
-    return False
+        return response
