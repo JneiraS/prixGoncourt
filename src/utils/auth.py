@@ -39,7 +39,7 @@ def authenticate() -> dict:
     Authentifie un membre du jury.
     """
 
-    password: str = Prompt.ask("Veuillez entrer votre mot de passe: ")
+    password: str = Prompt.ask("Veuillez entrer votre mot de passe: ", password=True)
     auth = Authentication(password)
     response = auth.check_password()
     if response:
