@@ -16,6 +16,7 @@ class MembresJuryDAO(DatabaseConnectionManager):
         """
         Récupère les Hash des membres dans la base de données.
         """
-        query = f"SELECT mot_de_passe FROM {self.table_name}"
+        query = f"SELECT * FROM {self.table_name}"
         results: list[dict] = query_database(self, query)
+
         return results
