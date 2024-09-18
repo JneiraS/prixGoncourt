@@ -11,3 +11,5 @@ class TableName(Enum):
     EDITEURS = "editeurs"
     MEMBER_JURY = "membre_jury"
     PERSONNAGES = "personnages"
+    EDIT = "edit"
+    ECRIT = "ecrit"
