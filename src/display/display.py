@@ -43,14 +43,34 @@ class DisplayeSelection(Display):
             header_style="dodger_blue1",
             border_style="grey42",
         )
-        table.add_column("Titres", style="dim", width=12, justify="center")
-        table.add_column("Résumés", style="dim", width=12, justify="center")
-        table.add_column("Auteur", style="dim", width=12, justify="center")
-        table.add_column("Date de publication", style="dim", width=12, justify="center")
-        table.add_column("Editeur", style="dim", width=12, justify="center")
-        table.add_column("Nombre de pages", style="dim", width=12, justify="center")
-        table.add_column("ISBN", style="dim", width=12, justify="center")
-        table.add_column("Prix", style="dim", width=12, justify="center")
+        table.add_column(
+            "Titres", style="dim", width=6, justify="center", vertical="middle"
+        )
+        table.add_column(
+            "Résumés", style="dim", width=14, justify="center", vertical="middle"
+        )
+        table.add_column(
+            "Auteur", style="dim", width=3, justify="center", vertical="middle"
+        )
+        table.add_column(
+            "Date de publication",
+            style="dim",
+            width=2,
+            justify="center",
+            vertical="middle",
+        )
+        table.add_column(
+            "Editeur", style="dim", width=4, justify="center", vertical="middle"
+        )
+        table.add_column(
+            "Nombre de pages", style="dim", width=1, justify="center", vertical="middle"
+        )
+        table.add_column(
+            "ISBN", style="dim", width=3, justify="center", vertical="middle"
+        )
+        table.add_column(
+            "Prix", style="dim", width=1, justify="center", vertical="middle"
+        )
 
         for livre in self.list_of_selected_books:
             table.add_row(
