@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-
-
+import concurrent.futures
 from abc import ABC, abstractmethod
 
 from src.dao.auteurs_dao import AuteursDAO
@@ -164,3 +163,16 @@ def create_all_auteurs_from_database() -> list[Auteur]:
     auteurs = AuteursDAO()
     results: list[dict] = auteurs.get_all()
     return list(map(AuteursCreator().factory_method, results))
+
+
+def initialize_database_in_threads() -> None:
+    """
+    Initialise la base de données en creant tous les objets
+    necessaires en utilisant des threads.
+    """
+    with concurrent.futures.ThreadPoolExecutor() as executor:
+        executor.submit(create_all_auteurs_from_database)
+        executor.submit(create_all_editeurs_from_database)
+        executor.submit(create_all_livres_from_database)
+        executor.submit(create_all_membre_jury_from_database)
+        executor.submit(create_all_personnages_from_database)
