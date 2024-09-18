@@ -22,13 +22,22 @@ class Display(ABC):
         pass
 
 
-class DisplayPremiereSelection(Display):
+class DisplayeSelection(Display):
+
+    def __init__(self, table_title: str, list_of_selected_books=None):
+
+        if list_of_selected_books is None:
+            list_of_selected_books = Livre.book_list
+
+        self.table_title = table_title
+        self.list_of_selected_books = list_of_selected_books
+
     def display(self):
         console = Console()
         terminal_width = console.size.width - 4
         table = Table(
             show_header=True,
-            title="\n\n\nPremière sélection",
+            title=f"\n\n\n{self.table_title}",
             box=box.SQUARE,
             width=terminal_width,
             header_style="dodger_blue1",
@@ -43,7 +52,7 @@ class DisplayPremiereSelection(Display):
         table.add_column("ISBN", style="dim", width=12, justify="center")
         table.add_column("Prix", style="dim", width=12, justify="center")
 
-        for livre in Livre.book_list:
+        for livre in self.list_of_selected_books:
             table.add_row(
                 livre.title,
                 livre.summary,
@@ -56,6 +65,7 @@ class DisplayPremiereSelection(Display):
             )
             table.add_row("", "", style="grey42", end_section=True)
 
+        clear_screen()
         console.print(table)
 
 
