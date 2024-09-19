@@ -1,6 +1,6 @@
 from rich.prompt import Prompt
 
-from src.dao.appartient_dao import get_books_in_selection
+from src.dao.appartient_dao import AppartientDAO
 from src.display.display import DisplayeSelection, clear_screen
 from src.utils.auth import authenticate
 from src.utils.factories import initialize_database_in_threads
@@ -11,7 +11,6 @@ def president_menu() -> None:
     Affiche le menu du-president
     """
     print("[1]. Résultats de votes pour deuxième sélection")
-    # TODO Fonction pour afficher les resultats de votes
     print("[2]. Résultats de votes pour troisième sélection")
     print("[3]. lauréat")
 
@@ -41,7 +40,8 @@ def menu_commun() -> None:
             first_selection.display()
 
         case "2":
-            second_selection_list = get_books_in_selection(2)
+            doa_appartient = AppartientDAO()
+            second_selection_list = doa_appartient.get_books_in_selection(2)
             second_selection = DisplayeSelection("Seconde Liste", second_selection_list)
             second_selection.display()
         case "3":
