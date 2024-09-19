@@ -6,8 +6,8 @@ from rich import box
 from rich.console import Console
 from rich.table import Table
 
-from src.dao.auteurs_dao import get_auteur_by_livre_id
-from src.dao.editeurs_dao import get_editeur_name_by_livre_id
+from src.dao.ecrit_dao import EcritDAO
+from src.dao.edit_dao import EditDAO
 from src.models.livre import Livre
 
 
@@ -34,6 +34,8 @@ class DisplayeSelection(Display):
 
     def display(self):
         console = Console()
+        dao_ecrit = EcritDAO()
+        dao_edit = EditDAO()
         terminal_width = console.size.width - 4
         table = Table(
             show_header=True,
@@ -76,9 +78,9 @@ class DisplayeSelection(Display):
             table.add_row(
                 livre.title,
                 livre.summary,
-                get_auteur_by_livre_id(livre.id),
+                dao_ecrit.get_auteur_by_livre_id(livre.id),
                 str(livre.publication_date),
-                get_editeur_name_by_livre_id(livre.id),
+                dao_edit.get_editeur_name_by_livre_id(livre.id),
                 str(livre.number_of_pages),
                 livre.isbn,
                 str(livre.price) + "€",
