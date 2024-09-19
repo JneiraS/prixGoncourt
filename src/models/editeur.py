@@ -1,4 +1,7 @@
-class Editeur:
+from src.models.entity import Entity
+
+
+class Editeur(Entity):
     """
     Classe qui represente un editeur
     """
@@ -6,7 +9,7 @@ class Editeur:
     editor_list: list = []
 
     def __init__(self, nom: str):
-        self.id = None
+        self._id = None
         self.nom = nom
 
         Editeur.editor_list.append(self)

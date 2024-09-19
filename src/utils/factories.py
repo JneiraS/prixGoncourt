@@ -48,7 +48,7 @@ class LivresCreator(Creator):
             information_source["prix"],
         )
 
-        livre.id = information_source["id_livre"]
+        livre._id = information_source["id_livre"]
 
         return livre
 
@@ -65,7 +65,7 @@ class AuteursCreator(Creator):
             information_source["biographie"],
         )
 
-        auteur.id = information_source["id_auteur"]
+        auteur._id = information_source["id_auteur"]
 
         return auteur
 
@@ -81,7 +81,7 @@ class EditeursCreator(Creator):
             information_source["nom"],
         )
 
-        editeur.id = information_source["id_editeur"]
+        editeur._id = information_source["id_editeur"]
 
         return editeur
 
@@ -98,7 +98,7 @@ class MembreJuryCreator(Creator):
             information_source["role"],
         )
 
-        membre_jury.id = information_source["id_membre"]
+        membre_jury._id = information_source["id_membre"]
 
         return membre_jury
 
@@ -115,7 +115,7 @@ class PersonnagesCreator(Creator):
             information_source["role"],
         )
 
-        personnages.id = information_source["id_personnage"]
+        personnages._id = information_source["id_personnage"]
 
         return personnages
 

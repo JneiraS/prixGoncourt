@@ -13,3 +13,5 @@ class TableName(Enum):
     PERSONNAGES = "personnages"
     EDIT = "edit"
     ECRIT = "ecrit"
+    APPARTIENT = "appartient"
+    VOTE = "vote"

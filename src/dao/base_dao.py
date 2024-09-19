@@ -11,12 +11,8 @@ from threading import Lock
 
 import pymysql
 
-from src.utils.database_utils import (
-    query_database,
-    run_query_with_commit,
-    insert_and_get_id,
-)
 from src.utils.database_utils import read_json
+from src.utils.logger import logger, LogMessages
 
 
 class SingletonMeta(type):
@@ -82,7 +78,7 @@ class DatabaseConnectionManager(metaclass=SingletonMeta):
             query += f" OFFSET {offset}"
             params.append(offset)
 
-        results: list[dict] = query_database(self, query)
+        results: list[dict] = self.query_database(query)
         return results
 
     def create(self, query) -> int | None:
@@ -90,7 +86,7 @@ class DatabaseConnectionManager(metaclass=SingletonMeta):
         Crée une nouvelle entité dans la base de données et retourne son identifiant.
         :param query:
         """
-        return insert_and_get_id(self, query)
+        return self.insert_and_get_id(query)
 
     def read(self, identifier: int = None) -> list[dict] | None:
         """
@@ -98,7 +94,7 @@ class DatabaseConnectionManager(metaclass=SingletonMeta):
         :param identifier:
         """
         query = f"SELECT * FROM {self.table_name} WHERE id = {identifier}"
-        return query_database(self, query)
+        return self.query_database(query)
 
     def update(self, table) -> bool:
         """
@@ -115,6 +111,83 @@ class DatabaseConnectionManager(metaclass=SingletonMeta):
         """
 
         query = f"DELETE FROM {self.table_name} WHERE id = {id_to_delete}"
-        if run_query_with_commit(self, query):
+        if self.run_query_with_commit(query):
             return True
         return False
+
+    def insert_and_get_id(self, query: str) -> int | None:
+        """
+        Insère une nouvelle valeur dans la base de données et retourne son identifiant.
+        :param self:
+        :param query:  La requête SQL
+        :return: identifiant de la nouvelle entité
+        """
+        logger.debug(LogMessages.DEBUG_MESSAGE.value)
+        try:
+            self.open_connection()
+            self.cursor.execute(query)
+            id_generated = self.cursor.lastrowid
+            self.conn.commit()
+            self.close_connection()
+            logger.info(
+                f"Fonction: {self.run_query_with_commit.__name__} terminée avec succès"
+            )
+
+            return id_generated
+
+        except Exception as e:
+            print(f"Une erreur est survenue : {e}")
+            self.close_connection()
+            logger.error(f"Erreur lors de l'exécution : {str(e)}")
+            return None
+
+    def query_database(self, query: str) -> list[dict] | None:
+        """
+        Exécute une requête SQL et renvoie les résultats sous forme de liste de dictionnaires.
+        :param self:
+        :param query: la requête SQL
+        :return: liste de dictionnaires ou None
+        """
+        logger.debug(LogMessages.DEBUG_MESSAGE.value)
+        try:
+            self.open_connection()
+            self.cursor.execute(query)
+            rows = self.cursor.fetchall()
+            self.close_connection()
+            logger.info(
+                f"Fonction: {self.run_query_with_commit.__name__} terminée avec succès"
+            )
+
+            return rows
+
+        except Exception as e:
+            print(f"Une erreur est survenue : {e}")
+            self.close_connection()
+            logger.error(f"Erreur lors de l'exécution : {str(e)}")
+            return None
+
+    def run_query_with_commit(self, query: str):
+        """
+        Exécute une requête SQL et valide la transaction.
+        :param self:
+        :param query: la requête SQL
+        :return: True si la requête a été exécutée correctement, False sinon
+        """
+        logger.debug(LogMessages.DEBUG_MESSAGE.value)
+
+        try:
+            self.open_connection()
+            self.cursor.execute(query)
+            self.conn.commit()
+            self.close_connection()
+            logger.info(
+                f"Fonction: {self.run_query_with_commit.__name__} terminée avec succès"
+            )
+
+            return True
+
+        except Exception as e:
+            print(f"An error occurred: {e}")
+            logger.error(f"Erreur lors de l'exécution : {str(e)}")
+            self.close_connection()
+            return False
