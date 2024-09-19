@@ -8,6 +8,7 @@ from rich.table import Table
 
 from src.dao.ecrit_dao import EcritDAO
 from src.dao.edit_dao import EditDAO
+from src.dao.vote_dao import count_votes
 from src.models.livre import Livre
 
 
@@ -88,6 +89,44 @@ class DisplayeSelection(Display):
             table.add_row("", "", style="grey42", end_section=True)
 
         clear_screen()
+        console.print(table)
+
+
+class DisplayVoteresults(Display):
+
+    def __init__(self, table_title: str, list_of_selected_books=None):
+        if list_of_selected_books is None:
+            list_of_selected_books = Livre.book_list
+
+        self.table_title = table_title
+        self.list_of_selected_books = list_of_selected_books
+
+    def display(self):
+        console = Console()
+
+        terminal_width = console.size.width - 4
+        table = Table(
+            show_header=True,
+            title=f"\n\n\n{self.table_title}",
+            box=box.SQUARE,
+            width=terminal_width,
+            header_style="dodger_blue1",
+            border_style="grey42",
+        )
+
+        table.add_column(
+            "Titres", style="dim", width=6, justify="center", vertical="middle"
+        )
+        table.add_column(
+            "Nombre de voie", style="dim", width=6, justify="center", vertical="middle"
+        )
+
+        for livre in self.list_of_selected_books:
+
+            result = count_votes(livre.id)
+            if result > 0:
+                table.add_row(livre.title, str(count_votes(livre.id)))
+
         console.print(table)
 
 
