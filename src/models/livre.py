@@ -1,7 +1,9 @@
 from datetime import date
 
+from src.models.entity import Entity
 
-class Livre:
+
+class Livre(Entity):
 
     book_list: list = []
 
@@ -15,7 +17,7 @@ class Livre:
         price: float,
     ):
 
-        self.id = None
+        self._id = None
         self.title = title
         self.summary = summary
         self.publication_date = publication_date
