@@ -13,7 +13,10 @@ def president_menu() -> None:
     print("[1]. Résultats de votes pour deuxième sélection")
     print("[2]. Résultats de votes pour troisième sélection")
     print("[3]. lauréat")
+    print("[Q]. Quitter")
 
+    response: str = Prompt.ask(": ", choices=["1", "2", "3", "4", "Q"])
+    print(response)
 
 def menu_commun() -> None:
     """
