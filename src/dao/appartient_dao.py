@@ -70,3 +70,18 @@ class AppartientDAO(DatabaseConnectionManager):
             else:
                 continue
         return True
+
+    def get_current_round(self) -> int:
+        """
+        Methode qui permet de connaitre le tour actuel en cours.
+        Si la table est vide, alors le tour actuel est le premier, sinon
+        il prend la valeur du maximum des identifiants de selection.
+        """
+
+        if self.query_database(f"SELECT * FROM {self.table_name} WHERE 1") == ():
+            return 1
+        else:
+            r = self.query_database(f"SELECT MAX(id_selection) FROM {self.table_name}")[
+                0
+            ]
+            return r["MAX(id_selection)"]
