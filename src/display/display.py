@@ -141,6 +141,42 @@ class DisplayVoteresults(Display):
 
         console.print(table)
 
+    def display_whith_id(self):
+        """
+        Affiche l'interface graphique des résultats du vote.
+
+        Cette méthode construit une table contenant le titre de chaque livre et le nombre de voix qu'il a
+        recueillies.
+        La table est affichée sur la console.
+        """
+        clear_screen()
+        console = Console()
+
+        dao_vote = VoteDAO()
+        results: list[dict] | None = dao_vote.get_voting_results_for(self.round_vote, 8)
+
+        terminal_width = console.size.width
+        table = Table(
+            show_header=True,
+            title=f"\n\n\n{self.table_title}",
+            box=box.SQUARE,
+            width=terminal_width,
+            header_style="dodger_blue1",
+            border_style="grey42",
+        )
+        table.add_column("ID", style="dim", width=1, justify="right", vertical="middle")
+        table.add_column(
+            "Titres", style="dim", width=6, justify="left", vertical="middle"
+        )
+
+        for dictionnaries in results:
+            for livre in self.list_of_selected_books:
+                if livre.id == dictionnaries["id_livre"]:
+                    table.add_row(str(livre.id), livre.title)
+                    break
+
+        console.print(table)
+
 
 def clear_screen() -> None:
     """
