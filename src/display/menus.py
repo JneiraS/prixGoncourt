@@ -8,30 +8,42 @@ from src.display.display import DisplayeSelection, DisplayVoteresults, clear_scr
 from src.utils.auth import authenticate
 
 
-def president_menu() -> None:
+def president_menu(id_member: int) -> None:
     """
     Affiche le menu du président
     Ce menu permet d'afficher les résultats des votes pour la deuxième et la troisième sélection
     ainsi que le lauréat.
     Il est possible de quitter.
     """
+    dao_appartient: AppartientDAO = AppartientDAO()
+    current_round: int = dao_appartient.get_current_round()
+
+    display_votes_results: DisplayVoteresults = DisplayVoteresults(
+        "Livres", current_round
+    )
+
     print("[1]. Résultats de votes pour deuxième sélection")
     print("[2]. Résultats de votes pour troisième sélection")
     print("[3]. lauréat")
+    print("[4]. Effectuer le prochain vote")
     print("[Q]. Quitter")
 
     response: str = Prompt.ask(
         "\n Que souhaitez-vous faire? : ", choices=["1", "2", "3", "4", "Q"]
     )
 
-    match response.lower():
-        case "q":
+    match response.upper():
+        case "Q":
             exit(0)
         case "1":
             handle_round_votes(2, 8)
 
         case "2":
             handle_round_votes(3, 4)
+            president_menu(id_member)
+        case "4":
+            do_next_vote(current_round, display_votes_results, id_member)
+            president_menu(id_member)
 
 
 def menu_commun() -> None:
@@ -39,7 +51,6 @@ def menu_commun() -> None:
     Affiche le menu commun
     Ce menu permet d'afficher les livres de la première, deuxième, troisième liste
     ainsi que le lauréat. Il est possible de s'identifier.
-
     """
 
     # clear_screen()
@@ -88,11 +99,19 @@ def menu_commun() -> None:
 
 def menu_jury(id_member: int):
     """
-    Affiche le menu des Jurys
-    :return:
+    Affiche le menu du jury
+    Ce menu permet d'effectuer le prochain vote
+    Il est possible de quitter
+    :param id_member: L'identifiant unique du membre du jury
     """
 
-    dao_vote = VoteDAO()
+    dao_appartient: AppartientDAO = AppartientDAO()
+    current_round: int = dao_appartient.get_current_round()
+
+    display_votes_results: DisplayVoteresults = DisplayVoteresults(
+        "Livres", current_round
+    )
+
     print("[1]. Effectuer le prochain vote")
     print("[Q]. Quitter")
 
@@ -102,11 +121,35 @@ def menu_jury(id_member: int):
             case "Q":
                 exit(0)
             case "1":
-                if dao_vote.has_voted_and_next_round_exists(id_member, 2) is False:
-                    print("Vous pouvez voter!")
-                else:
-                    print("\nVous avez déjà voté pour la selection en cours.\n")
+                do_next_vote(current_round, display_votes_results, id_member)
                 menu_commun()
+
+
+def do_next_vote(current_round, display_votes_results, id_member):
+    """
+    Permet d'effectuer le prochain vote.
+    Si le membre n'a pas encore voté pour la selection en cours, il est invité à choisir 8 livres
+    parmi la liste des livres de la sélection actuelle, dans l'ordre décroissant de préference.
+    Les votes sont enregistrés dans la base de données.
+    :param current_round: L'identifiant de la ronde de vote actuelle.
+    :param display_votes_results: L'objet qui permet d'afficher les résultats des votes.
+    :param id_member: L'identifiant unique du membre du jury.
+    :return: None
+    """
+    dao_vote: VoteDAO = VoteDAO()
+
+    if dao_vote.has_voted_and_next_round_exists(id_member, current_round) is False:
+        display_votes_results.display_whith_id()
+        member_choices: list[int] = list_maker(
+            "\n Veuillez choisir 8 livres parmi la liste ci-dessus, dans l'ordre décroiant de "
+            "préference:"
+        )
+
+        dao_vote.send_all_votes_to_db(member_choices, id_member, current_round)
+
+        # menu_jury(id_member)
+    else:
+        print("\nVous avez déjà voté pour la selection en cours.\n")
 
 
 def show_welcome_message():
@@ -118,10 +161,10 @@ def show_welcome_message():
     """
     auth_response: dict = authenticate()
 
-    if auth_response and auth_response["role"] == "Président\n":
+    if auth_response and auth_response["role"] == "Président":
         clear_screen()
-        print("Bonjour Président\n")
-        president_menu()
+        print("\nBonjour Président\n")
+        president_menu(auth_response["id_membre"])
     elif auth_response:
         clear_screen()
         print(f"Bienvenue {auth_response['nom']}\n")
@@ -139,7 +182,7 @@ def handle_round_votes(round_vote: int, books_selected: int):
     valide le résultat si demandé, et sauvegarde les livres sélectionnés
     dans la table Appartient.
 
-    :param round_vote: l'identifiant de la ronde de vote
+    :param round_vote: L'identifiant de la ronde de vote
     :param books_selected: le nombre de livres à sélectionner
     :return: None
     """
@@ -168,4 +211,27 @@ def handle_round_votes(round_vote: int, books_selected: int):
             print("Une erreure est survenue lors de la sauvegarde des votes")
         else:
             print("\nVotes intégrés avec succès\n")
-    president_menu()
+
+
+def list_maker(message: str) -> list[int]:
+    """Crée une liste d'identifiants de livres à partir d'une entrée utilisateur.
+
+    Cette méthode demande à l'utilisateur d'entrer un identifiant pour la
+    'Première Liste'. Elle gère plusieurs séparateurs possibles entre les
+    identifiants (espaces, tirets ou virgules)."""
+
+    separators = {" ", "-", ","}
+    liste = input(message)
+    premiere_liste = []
+
+    for separator in separators:
+        if separator in liste:
+            try:
+                premiere_liste = [int(x.strip()) for x in liste.split(separator)]
+                break
+            except ValueError as e:
+                print(
+                    f"{e}\nLes separateurs doivent être des espaces, tirets ou virgules)"
+                )
+
+    return premiere_liste
