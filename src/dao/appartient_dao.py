@@ -46,7 +46,27 @@ class AppartientDAO(DatabaseConnectionManager):
         :param id_livre:
         :param id_selection:
         """
-        self.create(
+        return self.create(
             f"INSERT INTO `{TableName.APPARTIENT.value}` (`id_livre`, `id_selection`) VALUES "
             f"('{id_livre}', '{id_selection}')"
         )
+
+    def add_books_to_selection(
+        self, selection_id: int, results_list: list[int]
+    ) -> bool:
+        """
+        Ajoute tous les livres d'une liste à une selection.
+
+        Cette méthode utilise la liste d'identifiants de livres créée par
+        `list_maker()` et les ajoute à la sélection spécifiée.
+        :param results_list: la liste d'identifiants de livres
+        :param selection_id: l'identifiant de la selection
+        :return:
+        """
+
+        for book in results_list:
+            if self.insert_book_to_selection(book, selection_id) is None:
+                return False
+            else:
+                continue
+        return True
