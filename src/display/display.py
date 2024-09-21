@@ -8,6 +8,7 @@ from rich.table import Table
 
 from src.dao.ecrit_dao import EcritDAO
 from src.dao.edit_dao import EditDAO
+from src.dao.vote_dao import VoteDAO
 from src.models.livre import Livre
 
 
@@ -88,6 +89,92 @@ class DisplayeSelection(Display):
             table.add_row("", "", style="grey42", end_section=True)
 
         clear_screen()
+        console.print(table)
+
+
+class DisplayVoteresults(Display):
+
+    def __init__(self, table_title: str, round_vote: int, list_of_selected_books=None):
+        if list_of_selected_books is None:
+            list_of_selected_books = Livre.book_list
+
+        self.table_title = table_title
+        self.round_vote = round_vote
+        self.list_of_selected_books = list_of_selected_books
+
+    def display(self):
+        """
+        Affiche l'interface graphique des résultats du vote.
+
+        Cette méthode construit une table contenant le titre de chaque livre et le nombre de voix qu'il a
+        recueillies.
+        La table est affichée sur la console.
+        """
+        clear_screen()
+        console = Console()
+
+        dao_vote = VoteDAO()
+        results: list[dict] | None = dao_vote.get_voting_results_for(self.round_vote, 8)
+
+        terminal_width = console.size.width - 4
+        table = Table(
+            show_header=True,
+            title=f"\n\n\n{self.table_title}",
+            box=box.SQUARE,
+            width=terminal_width,
+            header_style="dodger_blue1",
+            border_style="grey42",
+        )
+
+        table.add_column(
+            "Titres", style="dim", width=6, justify="center", vertical="middle"
+        )
+        table.add_column(
+            "Nombre de voie", style="dim", width=6, justify="center", vertical="middle"
+        )
+
+        for dictionnaries in results:
+            for livre in self.list_of_selected_books:
+                if livre.id == dictionnaries["id_livre"]:
+                    table.add_row(livre.title, str(dictionnaries["nombre_de_votes"]))
+                    break
+
+        console.print(table)
+
+    def display_whith_id(self):
+        """
+        Affiche l'interface graphique des résultats du vote.
+
+        Cette méthode construit une table contenant le titre de chaque livre et le nombre de voix qu'il a
+        recueillies.
+        La table est affichée sur la console.
+        """
+        clear_screen()
+        console = Console()
+
+        dao_vote = VoteDAO()
+        results: list[dict] | None = dao_vote.get_voting_results_for(self.round_vote, 8)
+
+        terminal_width = console.size.width
+        table = Table(
+            show_header=True,
+            title=f"\n\n\n{self.table_title}",
+            box=box.SQUARE,
+            width=terminal_width,
+            header_style="dodger_blue1",
+            border_style="grey42",
+        )
+        table.add_column("ID", style="dim", width=1, justify="right", vertical="middle")
+        table.add_column(
+            "Titres", style="dim", width=6, justify="left", vertical="middle"
+        )
+
+        for dictionnaries in results:
+            for livre in self.list_of_selected_books:
+                if livre.id == dictionnaries["id_livre"]:
+                    table.add_row(str(livre.id), livre.title)
+                    break
+
         console.print(table)
 
 

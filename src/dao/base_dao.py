@@ -129,16 +129,14 @@ class DatabaseConnectionManager(metaclass=SingletonMeta):
             id_generated = self.cursor.lastrowid
             self.conn.commit()
             self.close_connection()
-            logger.info(
-                f"Fonction: {self.run_query_with_commit.__name__} terminée avec succès"
-            )
+            logger.info(LogMessages.SUCCESS_QUERY_MESSAGE.value)
 
             return id_generated
 
         except Exception as e:
             print(f"Une erreur est survenue : {e}")
             self.close_connection()
-            logger.error(f"Erreur lors de l'exécution : {str(e)}")
+            logger.error(f"{LogMessages.ERRUER_QUERY_MESSAGE.value}{str(e)}")
             return None
 
     def query_database(self, query: str) -> list[dict] | None:
@@ -154,16 +152,14 @@ class DatabaseConnectionManager(metaclass=SingletonMeta):
             self.cursor.execute(query)
             rows = self.cursor.fetchall()
             self.close_connection()
-            logger.info(
-                f"Fonction: {self.run_query_with_commit.__name__} terminée avec succès"
-            )
+            logger.info(LogMessages.SUCCESS_QUERY_MESSAGE.value)
 
             return rows
 
         except Exception as e:
             print(f"Une erreur est survenue : {e}")
             self.close_connection()
-            logger.error(f"Erreur lors de l'exécution : {str(e)}")
+            logger.error(f"{LogMessages.ERRUER_QUERY_MESSAGE.value}{str(e)}")
             return None
 
     def run_query_with_commit(self, query: str):
@@ -180,14 +176,12 @@ class DatabaseConnectionManager(metaclass=SingletonMeta):
             self.cursor.execute(query)
             self.conn.commit()
             self.close_connection()
-            logger.info(
-                f"Fonction: {self.run_query_with_commit.__name__} terminée avec succès"
-            )
+            logger.info(LogMessages.SUCCESS_QUERY_MESSAGE.value)
 
             return True
 
         except Exception as e:
             print(f"An error occurred: {e}")
-            logger.error(f"Erreur lors de l'exécution : {str(e)}")
+            logger.error(f"{LogMessages.ERRUER_QUERY_MESSAGE.value}{str(e)}")
             self.close_connection()
             return False
