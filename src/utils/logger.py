@@ -8,9 +8,9 @@ class LogMessages(Enum):
     Enum pour les messages de log.
     """
 
-    DEBUG_MESSAGE = "Début de la fonction"
-    SUCCESS_QUERY_MESSAGE = "Requête effectuee avec_succès"
-    ERRUER_QUERY_MESSAGE = "Une erreur est survenue lors de l'exécution de la requête: "
+    DEBUG_MESSAGE = "Debut de la fonction"
+    SUCCESS_QUERY_MESSAGE = "Requeete effectuee avec_succes"
+    ERRUER_QUERY_MESSAGE = "Une erreur est survenue lors de l'execution de la requete: "
 
 
 logger = logging.getLogger(__name__)
@@ -25,3 +25,5 @@ file_handler.setFormatter(
     )
 )
 logger.addHandler(file_handler)
+
+
