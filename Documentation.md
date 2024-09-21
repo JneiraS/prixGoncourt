@@ -1,15 +1,14 @@
 # Conception de la DB
-# MCD
-     
+## MCD
 ![MCD](https://raw.githubusercontent.com/JneiraS/prixGoncourt/refs/heads/develop/Evaluation_MCD.png)
 
-#MLD
-     
+## MLD
 ![MLD](https://raw.githubusercontent.com/JneiraS/prixGoncourt/refs/heads/develop/Evaluation_MLD.png)
 
 # Diagramme de Classe
 
 ![Screenshot of a comment on a GitHub issue showing an image, added in the Markdown, of an Octocat smiling and raising a tentacle.](https://raw.githubusercontent.com/JneiraS/prixGoncourt/refs/heads/develop/D_Class%20UML.jpg)
+
 ## Gestion des DAO
 
 - Les classes **DAO (Data Access Object)** héritent toutes de la classe `DatabaseConnectionManager`, qui assure la gestion des connexions à la base de données et fournit des méthodes utilitaires.
