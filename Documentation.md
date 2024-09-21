@@ -290,7 +290,7 @@
 
   ---
 
-## `Creator` et Création d'Objets depuis la Base de Données
+## Création d'Objets depuis la Base de Données
 
 - Cette partie  décrit le fonctionnement de la classe abstraite `Creator`, ses sous-classes concrètes qui créent des objets spécifiques à partir d'une source d'information, ainsi que les fonctions qui permettent de récupérer et créer des objets depuis la base de données en utilisant un mécanisme multi-threading.
 
