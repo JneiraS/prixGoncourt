@@ -1,4 +1,4 @@
-# Conception de la DB
+# Documentation
 ## MCD
 ![MCD](https://raw.githubusercontent.com/JneiraS/prixGoncourt/refs/heads/develop/Evaluation_MCD.png)
 
