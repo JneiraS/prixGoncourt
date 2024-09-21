@@ -71,16 +71,3 @@ class VoteDAO(DatabaseConnectionManager):
                     f"{choice},{id_member},{vote_round + 1})"
                 )
             coef -= 1
-
-
-def count_votes(id_livre: int, round_vote: int):
-    """
-    Renvoie le nombre de votes d'un livre pour une tour de vote donné
-    :param round_vote:
-    :param id_livre:
-    :return:
-    """
-    dao_tote = VoteDAO()
-    vote_dict = dao_tote.get_voting_results_for(round_vote, 8)
-    print(vote_dict)
-    return vote_dict.count({"id_livre": id_livre})
