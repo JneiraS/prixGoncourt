@@ -1,4 +1,5 @@
 # Documentation
+
 ## MCD
 ![MCD](https://raw.githubusercontent.com/JneiraS/prixGoncourt/refs/heads/develop/Evaluation_MCD.png)
 
@@ -23,7 +24,7 @@
 
     ---
 
-- `DatabaseConnectionManager`
+- ### `DatabaseConnectionManager`
 
   - Cette classe gère l'ouverture et la fermeture des connexions avec la base de données et fournit des méthodes utilitaires pour exécuter des requêtes SQL.
 
@@ -57,7 +58,7 @@
 
     ---
 
-- **AppartientDAO**
+- ### **AppartientDAO**
 
   - Gère la table `appartient`, qui relie les livres aux sélections.
   - **Méthodes**
@@ -81,7 +82,7 @@
 
     ---
 
-- **AuteursDAO**
+- ### **AuteursDAO**
 
   - Gère la table `auteurs`, contenant les informations des auteurs.
 
@@ -101,7 +102,7 @@
 
     ---
 
-- **EditDAO**
+- ### **EditDAO**
 
   - Gère la table `edit`, qui relie les éditeurs aux livres.
   - **Méthodes**
@@ -109,7 +110,7 @@
 
   ---
 
-- **EditeursDAO**
+- ### **EditeursDAO**
 
   - Gère la table `editeurs`, qui contient les informations des éditeurs.
 
@@ -119,7 +120,7 @@
 
     ---
 
-- **LivresDAO**
+- ### **LivresDAO**
 
   - Gère la table `livres`, qui contient les informations des livres.
 
@@ -129,7 +130,7 @@
 
     ---
 
-- **MembresJuryDAO**
+- ### **MembresJuryDAO**
 
   - Gère la table `member_jury`, qui enregistre les membres du jury.
 
@@ -139,7 +140,7 @@
 
     ---
 
-- **PersonnagesDAO**
+- ### **PersonnagesDAO**
 
   - Gère la table `personnages`, qui contient les informations sur les personnages.
   - **init(self, table_name: str = TableName.PERSONNAGES.value)**
@@ -174,7 +175,7 @@
 
       ---
 
-- `Auteur`
+- ### `Auteur`
 
   - La classe `Auteur` représente un auteur et hérite de `Entity`. Chaque auteur est défini par son nom et sa biographie. Une liste `auteur_list` stocke tous les objets créés.
 
@@ -195,7 +196,7 @@
 
     ---
 
-- `Editeur`
+- ### `Editeur`
 
   - La classe `Editeur` représente un éditeur et hérite de `Entity`. Chaque éditeur est défini par son nom. Une liste `editor_list` stocke tous les éditeurs créés.
 
@@ -213,7 +214,7 @@
 
     ---
 
-- `Livre`
+- ### `Livre`
 
   - La classe `Livre` représente un livre et hérite de `Entity`. Chaque livre est défini par son titre, résumé, date de publication, nombre de pages, ISBN et prix. Une liste `book_list` stocke tous les livres créés.
 
@@ -246,7 +247,7 @@
 
     ---
 
-- `MembreJury`
+- ### `MembreJury`
 
   - La classe `MembreJury` représente un membre du jury et hérite de `Entity`. Chaque membre est défini par son nom et son rôle.
 
@@ -265,7 +266,7 @@
 
     ---
 
-- `Personnage`
+- ### `Personnage`
 
   - La classe `Personnage` représente un personnage et hérite de `Entity`. Chaque personnage est défini par son nom et son rôle.
 
