@@ -1,11 +1,10 @@
 # Conception de la DB
-
-- ## MCD
+## MCD
      
-- ![MCD](https://raw.githubusercontent.com/JneiraS/prixGoncourt/refs/heads/develop/Evaluation_MCD.png)
-- ## MLD
+![MCD](https://raw.githubusercontent.com/JneiraS/prixGoncourt/refs/heads/develop/Evaluation_MCD.png)
+## MLD
      
-- ![MLD](https://raw.githubusercontent.com/JneiraS/prixGoncourt/refs/heads/develop/Evaluation_MLD.png)
+![MLD](https://raw.githubusercontent.com/JneiraS/prixGoncourt/refs/heads/develop/Evaluation_MLD.png)
   ---
 # Diagramme de Classe
 
