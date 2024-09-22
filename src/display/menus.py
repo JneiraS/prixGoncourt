@@ -1,5 +1,6 @@
 import time
 
+from rich import print
 from rich.prompt import Prompt, Confirm
 
 from src.dao.appartient_dao import AppartientDAO
@@ -22,25 +23,36 @@ def president_menu(id_member: int) -> None:
         "Livres", current_round
     )
 
-    print("[1]. Résultats de votes pour deuxième sélection")
+    print("\n[1]. Résultats de votes pour deuxième sélection")
     print("[2]. Résultats de votes pour troisième sélection")
     print("[3]. lauréat")
     print("[4]. Effectuer le prochain vote")
-    print("[Q]. Quitter")
+    print("[[bright_cyan]R[/bright_cyan]]. Retour")
 
     response: str = Prompt.ask(
-        "\n Que souhaitez-vous faire? : ", choices=["1", "2", "3", "4", "Q"]
+        "\n Que souhaitez-vous faire? : ", choices=["1", "2", "3", "4", "R"]
     )
 
     match response.upper():
-        case "Q":
-            exit(0)
+        case "R":
+            clear_screen()
+            menu_commun()
         case "1":
             handle_round_votes(2, 8)
 
         case "2":
             handle_round_votes(3, 4)
             president_menu(id_member)
+
+        case "3":
+            display_votes_results.display_whith_id()
+            laureat: int = int(input("\nLe lauréat est : "))
+            dao_appartient.create(
+                f"INSERT INTO {dao_appartient.table_name} (`id_livre`, `id_selection`) "
+                f"VALUES ('{laureat}', 4)"
+            )
+            president_menu(id_member)
+
         case "4":
             do_next_vote(current_round, display_votes_results, id_member)
             president_menu(id_member)
@@ -53,19 +65,17 @@ def menu_commun() -> None:
     ainsi que le lauréat. Il est possible de s'identifier.
     """
 
-    # clear_screen()
-
-    print("[1]. Afficher les livres de la première sélection")
+    print("\n[1]. Afficher les livres de la première sélection")
     print("[2]. Afficher les livres de la deuxième sélection")
     print("[3]. Afficher les livres de la troisième sélection")
     print("[4]. Afficher le lauréat")
     print("[5]. S'identifier")
-    print("[Q]. Quitter")
+    print("[[bright_cyan]Q[/bright_cyan]]. Quitter")
 
     response: str = Prompt.ask(
         "\n Que souhaitez-vous faire? : ", choices=["1", "2", "3", "4", "5", "Q"]
     )
-
+    doa_appartient = AppartientDAO()
     while True:
         match response.upper():
             case "Q":
@@ -76,7 +86,7 @@ def menu_commun() -> None:
                 menu_commun()
 
             case "2":
-                doa_appartient = AppartientDAO()
+
                 second_selection_list = doa_appartient.get_books_in_selection(2)
                 second_selection = DisplayeSelection(
                     "Seconde Liste", second_selection_list
@@ -85,11 +95,17 @@ def menu_commun() -> None:
                 menu_commun()
 
             case "3":
-                doa_appartient = AppartientDAO()
+
                 thrird_selection_list = doa_appartient.get_books_in_selection(3)
                 thrird_selection = DisplayeSelection(
                     "Troisième Liste", thrird_selection_list
                 )
+                thrird_selection.display()
+                menu_commun()
+
+            case "4":
+                thrird_selection_list = doa_appartient.get_books_in_selection(4)
+                thrird_selection = DisplayeSelection("Laureat", thrird_selection_list)
                 thrird_selection.display()
                 menu_commun()
 
@@ -113,19 +129,23 @@ def menu_jury(id_member: int):
     )
 
     print("[1]. Effectuer le prochain vote")
-    print("[Q]. Quitter")
+    print("[[bright_cyan]R[/bright_cyan]]. Retour")
 
-    response: str = Prompt.ask("\nQue souhaitez-vous faire? : ", choices=["1", "Q"])
+    response: str = Prompt.ask("\nQue souhaitez-vous faire? : ", choices=["1", "R"])
     while True:
         match response.upper():
-            case "Q":
-                exit(0)
-            case "1":
-                do_next_vote(current_round, display_votes_results, id_member)
+            case "R":
+                clear_screen()
                 menu_commun()
+            case "1":
+                clear_screen()
+                do_next_vote(current_round, display_votes_results, id_member)
+                menu_jury(id_member)
 
 
-def do_next_vote(current_round, display_votes_results, id_member):
+def do_next_vote(
+    current_round: int, display_votes_results: DisplayVoteresults, id_member: int
+):
     """
     Permet d'effectuer le prochain vote.
     Si le membre n'a pas encore voté pour la selection en cours, il est invité à choisir 8 livres
@@ -138,18 +158,29 @@ def do_next_vote(current_round, display_votes_results, id_member):
     """
     dao_vote: VoteDAO = VoteDAO()
 
-    if dao_vote.has_voted_and_next_round_exists(id_member, current_round) is False:
+    if dao_vote.has_voted(id_member, current_round) is True:
         display_votes_results.display_whith_id()
+
+        possibles_choices: list = [8, 4, 2]
+
         member_choices: list[int] = list_maker(
-            "\n Veuillez choisir 8 livres parmi la liste ci-dessus, dans l'ordre décroiant de "
+            f"\n Veuillez choisir {possibles_choices[current_round-1]} livres parmi la liste ci-dessus, dans "
+            f"l'ordre"
+            f"décroiant de"
             "préference:"
         )
 
-        dao_vote.send_all_votes_to_db(member_choices, id_member, current_round)
+        dao_vote.send_all_votes_to_db(
+            member_choices[: possibles_choices[current_round - 1]],
+            id_member,
+            current_round,
+        )
 
-        # menu_jury(id_member)
     else:
-        print("\nVous avez déjà voté pour la selection en cours.\n")
+        if current_round <= 2:
+            print("\nVous avez déjà voté pour la selection en cours.\n")
+        else:
+            print("\nVeuillez choisir le Lauréat\n")
 
 
 def show_welcome_message():
