@@ -42,16 +42,34 @@ class DatabaseConnectionManager(metaclass=SingletonMeta):
         self.cursor = None
 
     def open_connection(self) -> None:
-        """Opens a database connection."""
-        config = read_json("./config/database_config.json")
+        """
+        Ouvre une connexion a la base de données.
 
-        self.conn = pymysql.connect(**config, cursorclass=pymysql.cursors.DictCursor)
-        self.cursor = self.conn.cursor()
+        Ouvre un fichier de configuration JSON et lit les informations de connexion a la base de données.
+        Si le fichier n'existe pas, un message d'erreur est imprimé et une exception FileNotFoundError est
+        levée. Si le fichier existe, une connexion à la base de donnees est établie et un curseur est cree.
+        """
+        config = None
+        try:
+            config = read_json("./config/database_config.json")
+        except FileNotFoundError as e:
+            print(f"An error occurred: {e}")
+            logger.error(f"{LogMessages.FILE_NOT_FOUND.value}{str(e)}")
+
+        if config is not None:
+            self.conn = pymysql.connect(
+                **config, cursorclass=pymysql.cursors.DictCursor
+            )
+            self.cursor = self.conn.cursor()
+        else:
+            logger.error("Failed to read database configuration")
 
     def close_connection(self) -> None:
         """
         Ferme la connexion avec la base de données.
+        Ferme le curseur et la connexion associés si ils existent.
         """
+
         if self.cursor:
             self.cursor.close()
         if self.conn:
@@ -136,7 +154,7 @@ class DatabaseConnectionManager(metaclass=SingletonMeta):
         except Exception as e:
             print(f"Une erreur est survenue : {e}")
             self.close_connection()
-            logger.error(f"{LogMessages.ERRUER_QUERY_MESSAGE.value}{str(e)}")
+            logger.error(f"{LogMessages.ERRUER_MESSAGE.value}{str(e)}")
             return None
 
     def query_database(self, query: str) -> list[dict] | None:
@@ -159,7 +177,7 @@ class DatabaseConnectionManager(metaclass=SingletonMeta):
         except Exception as e:
             print(f"Une erreur est survenue : {e}")
             self.close_connection()
-            logger.error(f"{LogMessages.ERRUER_QUERY_MESSAGE.value}{str(e)}")
+            logger.error(f"{LogMessages.ERRUER_MESSAGE.value}{str(e)}")
             return None
 
     def run_query_with_commit(self, query: str):
@@ -182,6 +200,6 @@ class DatabaseConnectionManager(metaclass=SingletonMeta):
 
         except Exception as e:
             print(f"An error occurred: {e}")
-            logger.error(f"{LogMessages.ERRUER_QUERY_MESSAGE.value}{str(e)}")
+            logger.error(f"{LogMessages.ERRUER_MESSAGE.value}{str(e)}")
             self.close_connection()
             return False
