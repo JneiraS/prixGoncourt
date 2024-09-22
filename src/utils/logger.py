@@ -10,12 +10,13 @@ class LogMessages(Enum):
 
     DEBUG_MESSAGE = "Debut de la fonction"
     SUCCESS_QUERY_MESSAGE = "Requeete effectuee avec_succes"
-    ERRUER_QUERY_MESSAGE = "Une erreur est survenue lors de l'execution de la requete: "
+    ERRUER_MESSAGE = "Une erreur est survenue: "
+    FILE_NOT_FOUND = "Fichier introuvable: "
 
 
 logger = logging.getLogger(__name__)
 
-logger.setLevel(logging.INFO)
+logger.setLevel(logging.ERROR)
 
 file_handler = RotatingFileHandler("app.log", maxBytes=1000000, backupCount=1)
 file_handler.setFormatter(
@@ -25,5 +26,3 @@ file_handler.setFormatter(
     )
 )
 logger.addHandler(file_handler)
-
-
