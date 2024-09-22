@@ -1,5 +1,10 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+
+"""
+Ce fichier contient la classe Creator qui s'occupe de la creation d'objets.
+"""
+
 import concurrent.futures
 from abc import ABC, abstractmethod
 
@@ -13,10 +18,6 @@ from src.models.editeur import Editeur
 from src.models.livre import Livre
 from src.models.membre_jury import MembreJury
 from src.models.personnage import Personnage
-
-"""
-Ce fichier contient la classe Creator qui s'occupe de la creation d'objets.
-"""
 
 
 class Creator(ABC):
