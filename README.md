@@ -3,10 +3,11 @@
 Ce projet est une application console permettant de gérer le Prix Goncourt, un prix littéraire français prestigieux. L'application facilite la gestion et le déroulement des votes. Les données sont stockées dans une base de données MySQL.
 
 ## Fonctionnalités
-
-- Vote des membres du jury et du président
-- Gestion complète des votes
-- Affichage des résultats des votes
+- Consultation des livres dans les différentes sélections.
+- Identification des emembres et du président.
+- Vote des membres du jury et du président.
+- Gestion complète des votes.
+- Affichage des résultats des votes et du lauréat
 
 ## Installation
 

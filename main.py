@@ -7,11 +7,13 @@ from src.utils.factories import initialize_database_in_threads
 
 
 def main():
-    # Initialise la base de données en utilisant des threads.
-    initialize_database_in_threads()
-    # Affiche le menu commun
-    clear_screen()
+    """
+    Fonction principale du programme.
 
+    Initialise la base de données en utilisant des threads, puis affiche le menu commun.
+    """
+    initialize_database_in_threads()
+    clear_screen()
     menu_commun()
 
 
